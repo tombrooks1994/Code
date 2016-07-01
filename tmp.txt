@@ -1,0 +1,25 @@
+if ($item['id'] == 1081) {
+  $invoice_id = ADD_ORDER::$invoice_id;
+  $sqlCap = "
+    SET
+      foreign_key_checks = 0;
+    INSERT INTO
+      capital_allowance (id, prop_type, purch_date, purch_price, owning_entity, tax_band, is_finalised)
+            VALUES ('" . $invoice_id . "', '" . $prop_type . "', '" . $purch_date . "', '" . $purch_price . "', '" . $owning_entity . "', '" . $tax_band . "', 0);
+    SET foreign_key_checks = 1;";
+  $stmt = DB::Prepare($sqlCap);
+  $stmt->execute();
+  mysql_log($stmt->fullQuery);
+  unset($stmt);
+  if  (($client_name != NULL) || ($client_email != NULL) || ($client_phone != NULL)){
+  $sqlCapCli = "SET foreign_key_checks = 0;
+    INSERT INTO capital_allowance_client (id, client_name, client_email, client_contact_number)
+    VALUES ('" . $invoice_id . "', '" . $client_name . "', '" . $client_email . "', '" . $client_phone . "');
+    SET foreign_key_checks = 1;
+";
+  $stmt = DB::Prepare($sqlCapCli);
+  $stmt->execute();
+  mysql_log($stmt->fullQuery);
+  unset($stmt);
+  }
+}
